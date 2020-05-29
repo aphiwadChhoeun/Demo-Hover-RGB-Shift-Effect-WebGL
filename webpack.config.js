@@ -13,7 +13,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'docs'),
     filename: '[name].bundle.js',
-    publicPath: env == 'development' ? '/' : 'Demo-Hover-RGB-Shift-Effect-WebGL',
+    publicPath: env == 'development' ? '/' : '/Demo-Hover-RGB-Shift-Effect-WebGL',
   },
 
   devServer: {
