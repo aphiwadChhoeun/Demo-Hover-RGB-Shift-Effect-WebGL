@@ -6,9 +6,8 @@ export default class LightBox {
     this.wrapper = wrapper;
     this.images = images;
     this.container = this.wrapper.querySelector(".lightbox__item");
-    this.metaContainer = this.container.querySelector('.meta');
+    this.metaContainer = this.wrapper.querySelector('.lightbox__meta');
     this.backdrop = this.wrapper.querySelector(".backdrop");
-    this.closeBtn = this.wrapper.querySelector(".lightbox__close");
 
     this.init();
   }
@@ -17,18 +16,12 @@ export default class LightBox {
     this.backdrop.addEventListener("click", (e) => {
       this.close();
     });
-
-    this.closeBtn.addEventListener("click", (e) => {
-      this.close();
-    });
   }
 
   setImage(image) {
-    if (this.image) {
-      this.container.removeChild(this.image);
-    }
+    this.container.innerHTML = '';
     this.image = image.cloneNode();
-    this.container.insertBefore(this.image, this.metaContainer);
+    this.container.appendChild(this.image);
   }
 
   setMeta(text) {

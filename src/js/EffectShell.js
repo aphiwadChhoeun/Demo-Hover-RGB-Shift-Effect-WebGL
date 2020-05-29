@@ -60,7 +60,12 @@ export default class EffectShell {
 
   onTexturesLoaded() {
     console.log("textures loaded");
-    let geometry = new THREE.PlaneBufferGeometry(6, 4, 32, 32);
+    let geometry = new THREE.PlaneBufferGeometry(
+      600 * (this.viewSize.width / this.viewport.width),
+      400 * (this.viewSize.height / this.viewport.height),
+      32,
+      32
+    );
     let material = new THREE.MeshBasicMaterial({ map: this.textures[0] });
     this.plane = new THREE.Mesh(geometry, material);
 
@@ -173,5 +178,15 @@ export default class EffectShell {
       height,
       aspectRatio,
     };
+  }
+
+  get viewSize() {
+    // https://gist.github.com/ayamflow/96a1f554c3f88eef2f9d0024fc42940f
+
+    let distance = this.camera.position.z;
+    let vFov = (this.camera.fov * Math.PI) / 180;
+    let height = 2 * Math.tan(vFov / 2) * distance;
+    let width = height * this.viewport.aspectRatio;
+    return { width, height, vFov };
   }
 }

@@ -6,14 +6,14 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const env = process.env.NODE_ENV;
 
 module.exports = {
-  entry: './app/index.js',
+  entry: './src/js/index.js',
 
   mode: env,
 
   output: {
     path: path.resolve(__dirname, 'docs'),
     filename: '[name].bundle.js',
-    publicPath: '/'
+    publicPath: env == 'development' ? '/' : 'Demo-Hover-RGB-Shift-Effect-WebGL',
   },
 
   devServer: {
@@ -43,7 +43,7 @@ module.exports = {
   },
 
   plugins: [
-    new HtmlWebpackPlugin({template: './app/index.html'}),
+    new HtmlWebpackPlugin({template: './src/index.html'}),
     new webpack.HotModuleReplacementPlugin(),
     new MiniCssExtractPlugin({
       // Options similar to the same options in webpackOptions.output

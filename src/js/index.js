@@ -1,4 +1,4 @@
-import './index.scss';
+import '../styles/index.scss';
 import * as THREE from "three";
 import LightBox from "./LightBox";
 import EffectShell from "./EffectShell";
