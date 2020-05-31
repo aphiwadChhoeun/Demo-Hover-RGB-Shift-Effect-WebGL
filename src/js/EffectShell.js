@@ -128,8 +128,6 @@ export default class EffectShell {
     this.effectPosition.x += this.mouseSpeed.x;
     this.effectPosition.y += this.mouseSpeed.y;
 
-    this.effectPass.uniforms.uTime.value += 0.01;
-
     this.render();
 
     requestAnimationFrame(this.animate.bind(this));
