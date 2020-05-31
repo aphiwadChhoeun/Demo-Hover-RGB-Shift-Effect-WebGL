@@ -38,7 +38,10 @@
     "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
+    "glslify": "^7.0.0",
+    "glslify-loader": "^2.0.0",
     "gsap": "^3.2.6",
+    "raw-loader": "^4.0.1",
     "three": "^0.116.1"
   }
 }

@@ -31,6 +31,14 @@ module.exports = {
         use: 'babel-loader'
       },
       {
+        test: /\.(glsl|vs|fs|vert|frag)$/,
+        exclude: /node_modules/,
+        use: [
+          'raw-loader',
+          'glslify-loader'
+        ]
+      },
+      {
         test: /\.(sa|sc|c)ss$/,
         use: [
           env == 'development' ? 'style-loader' : MiniCssExtractPlugin.loader,

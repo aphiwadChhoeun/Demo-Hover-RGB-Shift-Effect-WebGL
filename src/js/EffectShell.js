@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass";
+import RGBShift from '../shader/RGBShift.glsl';
 
 // EFFECT SHELL
 export default class EffectShell {
@@ -26,19 +27,18 @@ export default class EffectShell {
     );
     this.camera.position.z = 6;
 
-    this.mouse = {
+    this.effectPosition = {
       x: 0,
       y: 0,
     };
-    this.rawMouse = {
+    this.mousePosition = {
       x: 0,
       y: 0,
     };
-    this.vMouse = {
+    this.mouseSpeed = {
       x: 0.0,
       y: 0.0,
     };
-    this.uMouse = new THREE.Vector2(0.5);
 
     window.addEventListener("resize", this.onResize.bind(this));
     document.addEventListener("mousemove", (e) => {
@@ -83,6 +83,9 @@ export default class EffectShell {
       uMouse: {
         value: new THREE.Vector2(0.5, 0.5),
       },
+      uTime: {
+        value: 0.0
+      }
     };
     let vertexShader = `
         varying vec2 vUv;
@@ -92,33 +95,7 @@ export default class EffectShell {
           gl_Position = projectionMatrix * modelViewMatrix * vec4( position , 1.0 );
         }
       `;
-    let fragmentShader = `
-        uniform sampler2D tDiffuse;
-        uniform float uAmount;
-        uniform vec2 uMouse;
-
-        varying vec2 vUv;
-
-        float circle(vec2 uv, vec2 disc_center, float disc_radius, float border_size) {
-          float dist = distance(uv, disc_center);
-          return smoothstep(disc_radius+border_size, disc_radius-border_size, dist);
-        }
-
-        void main() {
-          float c = uAmount * circle(vUv, uMouse, 0., 0.2);
-
-          vec4 cr = texture2D(tDiffuse, (vUv + c));
-          vec4 cga = texture2D(tDiffuse, vUv);
-          vec4 cb = texture2D(tDiffuse, (vUv - c));
-
-          // zoom effect
-          // vec2 warp = mix(vUv, uMouse, c * 5.0);
-
-          gl_FragColor = vec4(cga.r, cr.g, cb.b, cga.a);
-          // zoom effect
-          // gl_FragColor = texture2D(tDiffuse, warp);
-        }
-      `;
+    let fragmentShader = RGBShift;
     this.effectPass = new ShaderPass({
       uniforms: this.uniforms,
       vertexShader: vertexShader,
@@ -142,16 +119,16 @@ export default class EffectShell {
   }
 
   animate() {
-    this.vMouse.x = (this.rawMouse.x - this.mouse.x) * 0.08;
-    this.vMouse.y = (this.rawMouse.y - this.mouse.y) * 0.08;
+    this.mouseSpeed.x = (this.mousePosition.x - this.effectPosition.x) * 0.08;
+    this.mouseSpeed.y = (this.mousePosition.y - this.effectPosition.y) * 0.08;
 
-    this.mouse.x += this.vMouse.x;
-    this.mouse.y += this.vMouse.y;
+    this.effectPass.uniforms.uMouse.value.x = this.effectPosition.x / this.viewport.width;
+    this.effectPass.uniforms.uMouse.value.y = 1.- this.effectPosition.y / this.viewport.height;
 
-    this.uMouse.x = this.mouse.x / this.viewport.width;
-    this.uMouse.y = 1 - this.mouse.y / this.viewport.height;
+    this.effectPosition.x += this.mouseSpeed.x;
+    this.effectPosition.y += this.mouseSpeed.y;
 
-    this.effectPass.uniforms.uMouse.value = this.uMouse;
+    this.effectPass.uniforms.uTime.value += 0.01;
 
     this.render();
 
@@ -165,8 +142,10 @@ export default class EffectShell {
   }
 
   onMouseMove(e) {
-    this.rawMouse.x = e.clientX;
-    this.rawMouse.y = e.clientY;
+    this.mousePosition.x = e.clientX;
+    this.mousePosition.y = e.clientY;
+
+    // console.log(this.effectPass.uniforms.uMouse.value);
   }
 
   get viewport() {
