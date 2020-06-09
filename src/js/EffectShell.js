@@ -61,8 +61,8 @@ export default class EffectShell {
   onTexturesLoaded() {
     console.log("textures loaded");
     let geometry = new THREE.PlaneBufferGeometry(
-      600 * (this.viewSize.width / this.viewport.width),
-      400 * (this.viewSize.height / this.viewport.height),
+      800 * (this.viewSize.width / this.viewport.width),
+      520 * (this.viewSize.height / this.viewport.height),
       32,
       32
     );
@@ -78,7 +78,7 @@ export default class EffectShell {
         value: null,
       },
       uAmount: {
-        value: 0.008,
+        value: 0.02,
       },
       uMouse: {
         value: new THREE.Vector2(0.5, 0.5),
